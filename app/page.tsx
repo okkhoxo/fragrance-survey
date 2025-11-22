@@ -100,8 +100,12 @@ export default function Home() {
     }
 
     // 로컬 스토리지에 저장
-    const existingResponses = JSON.parse(localStorage.getItem('surveyResponses') || '[]');
-    localStorage.setItem('surveyResponses', JSON.stringify([...existingResponses, ...responses]));
+    try {
+      const existingResponses = JSON.parse(localStorage.getItem('surveyResponses') || '[]');
+      localStorage.setItem('surveyResponses', JSON.stringify([...existingResponses, ...responses]));
+    } catch (error) {
+      console.error('localStorage access error (Safari private mode?):', error);
+    }
 
     setStep('submitted');
   };
@@ -696,17 +700,21 @@ export default function Home() {
   // Submitted
   if (step === 'submitted') {
     const handleSatisfactionSubmit = (rating: number) => {
-      // Update all responses with satisfaction
-      const existingResponses = JSON.parse(localStorage.getItem('surveyResponses') || '[]');
-      const updatedResponses = existingResponses.map((r: any) => {
-        // Update only the responses from this session (last 3 responses)
-        const isRecentResponse = existingResponses.indexOf(r) >= existingResponses.length - 3;
-        if (isRecentResponse) {
-          return { ...r, satisfaction: rating as 1 | 2 | 3 | 4 | 5 };
-        }
-        return r;
-      });
-      localStorage.setItem('surveyResponses', JSON.stringify(updatedResponses));
+      try {
+        // Update all responses with satisfaction
+        const existingResponses = JSON.parse(localStorage.getItem('surveyResponses') || '[]');
+        const updatedResponses = existingResponses.map((r: any) => {
+          // Update only the responses from this session (last 3 responses)
+          const isRecentResponse = existingResponses.indexOf(r) >= existingResponses.length - 3;
+          if (isRecentResponse) {
+            return { ...r, satisfaction: rating as 1 | 2 | 3 | 4 | 5 };
+          }
+          return r;
+        });
+        localStorage.setItem('surveyResponses', JSON.stringify(updatedResponses));
+      } catch (error) {
+        console.error('localStorage access error (Safari private mode?):', error);
+      }
     };
 
     return (

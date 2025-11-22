@@ -324,7 +324,7 @@ function generateSingleResponse(date: Date, month: number): SurveyResponse {
   const emphasizedFragrance = selectEmphasizedFragrance(mainFragrance.id);
 
   return {
-    id: `mock-${timestamp}-${rng.next().toString().substr(2, 9)}`,
+    id: `mock-${timestamp}-${rng.next().toString().substring(2, 11)}`,
     age: generateAge(),
     gender: generateGender(),
     selectedFragranceId: mainFragrance.id,

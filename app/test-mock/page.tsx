@@ -9,7 +9,11 @@ export default function TestMockPage() {
   const handleClearAndRegenerate = () => {
     try {
       console.log('Clearing old data...');
-      localStorage.clear();
+      try {
+        localStorage.clear();
+      } catch (e) {
+        console.warn('localStorage not available:', e);
+      }
 
       console.log('Starting archive data generation...');
       const data = generateMockData();
@@ -18,7 +22,12 @@ export default function TestMockPage() {
 
       // Save to localStorage
       console.log('Saving to localStorage...');
-      localStorage.setItem('surveyResponses', JSON.stringify(data));
+      try {
+        localStorage.setItem('surveyResponses', JSON.stringify(data));
+      } catch (e) {
+        console.warn('localStorage not available:', e);
+        alert('localStorage를 사용할 수 없습니다 (사파리 프라이빗 모드?). 데이터가 메모리에만 저장됩니다.');
+      }
 
       // Calculate statistics
       const jsonString = JSON.stringify(data);

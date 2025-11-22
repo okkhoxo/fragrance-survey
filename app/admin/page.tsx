@@ -30,17 +30,24 @@ export default function AdminPage() {
   });
 
   useEffect(() => {
-    let data = JSON.parse(localStorage.getItem('surveyResponses') || '[]');
+    try {
+      let data = JSON.parse(localStorage.getItem('surveyResponses') || '[]');
 
-    // Auto-generate mock data if localStorage is empty
-    if (data.length === 0) {
-      console.log('No data found in localStorage. Generating archive data...');
-      data = generateMockData();
-      localStorage.setItem('surveyResponses', JSON.stringify(data));
-      console.log(`Auto-generated ${data.length} archived responses`);
+      // Auto-generate mock data if localStorage is empty
+      if (data.length === 0) {
+        console.log('No data found in localStorage. Generating archive data...');
+        data = generateMockData();
+        localStorage.setItem('surveyResponses', JSON.stringify(data));
+        console.log(`Auto-generated ${data.length} archived responses`);
+      }
+
+      setResponses(data);
+    } catch (error) {
+      console.error('localStorage access error (Safari private mode?):', error);
+      // Generate data in memory even if localStorage is not available
+      const data = generateMockData();
+      setResponses(data);
     }
-
-    setResponses(data);
   }, []);
 
   useEffect(() => {

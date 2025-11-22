@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { SurveyResponse, getAgeGroup, AgeGroup } from '@/lib/types/survey';
 import { fragrances } from '@/lib/data/fragrances';
 import { useRouter } from 'next/navigation';
+import { generateMockData } from '@/lib/utils/generateMockData';
 
 export default function AdminPage() {
   const router = useRouter();
@@ -29,7 +30,16 @@ export default function AdminPage() {
   });
 
   useEffect(() => {
-    const data = JSON.parse(localStorage.getItem('surveyResponses') || '[]');
+    let data = JSON.parse(localStorage.getItem('surveyResponses') || '[]');
+
+    // Auto-generate mock data if localStorage is empty
+    if (data.length === 0) {
+      console.log('No data found in localStorage. Generating archive data...');
+      data = generateMockData();
+      localStorage.setItem('surveyResponses', JSON.stringify(data));
+      console.log(`Auto-generated ${data.length} archived responses`);
+    }
+
     setResponses(data);
   }, []);
 
